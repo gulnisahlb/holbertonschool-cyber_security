@@ -1,23 +1,17 @@
 #!/bin/bash
 
-# Check if argument is provided
-if [ -z "$1" ]; then
-    exit 1
-fi
+# Exit if no argument
+[ -z "$1" ] && exit 1
 
 # Remove {xor} prefix
 hash="${1#\{xor\}}"
 
-# Base64 decode
-decoded=$(echo "$hash" | base64 -d 2>/dev/null)
-
-# XOR decode with 0x5A
-result=""
-for (( i=0; i<${#decoded}; i++ )); do
-    char=$(printf "%d" "'${decoded:$i:1}")
-    xor=$((char ^ 0x5A))
-    result+=$(printf "\\$(printf '%03o' "$xor")")
+# Decode base64 and XOR byte-by-byte with 0x5A
+echo "$hash" | base64 -d | xxd -p | tr -d '\n' | sed 's/../& /g' | while read -r bytes; do
+    for b in $bytes; do
+        printf "\\$(printf '%03o' $((0x$b ^ 0x5A)))"
+    done
 done
 
-# Output result
-echo "$result"
+echo
+
