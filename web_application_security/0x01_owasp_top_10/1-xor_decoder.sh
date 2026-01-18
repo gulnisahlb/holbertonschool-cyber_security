@@ -6,12 +6,11 @@
 # Remove {xor} prefix
 hash="${1#\{xor\}}"
 
-# Decode base64 and XOR byte-by-byte with 0x5A
-echo "$hash" | base64 -d | xxd -p | tr -d '\n' | sed 's/../& /g' | while read -r bytes; do
-    for b in $bytes; do
-        printf "\\$(printf '%03o' $((0x$b ^ 0x5A)))"
+# Base64 decode -> od -> XOR -> print
+echo "$hash" | base64 -d | od -An -tu1 | while read -r line; do
+    for byte in $line; do
+        printf "\\$(printf '%03o' $((byte ^ 0x5A)))"
     done
 done
 
 echo
-
