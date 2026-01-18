@@ -1,16 +1,14 @@
 #!/bin/bash
 
-# Exit if no argument
-[ -z "$1" ] && exit 1
+# Check if the argument is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 {xor}HASH"
+    exit 1
+fi
 
-# Remove {xor} prefix
-hash="${1#\{xor\}}"
+# Remove the "{xor}" prefix from the input string
+encoded_string="${1#\{xor\}}"
 
-# Base64 decode -> od -> XOR -> print
-echo "$hash" | base64 -d | od -An -tu1 | while read -r line; do
-    for byte in $line; do
-        printf "\\$(printf '%03o' $((byte ^ 0x5A)))"
-    done
-done
-
-echo
+# Decode from Base64 and XOR each byte with '_' (ASCII 95)
+echo -n "$encoded_string" | base64 -d 2>/dev/null | perl -pe '$_ ^= "_" x length'
+echo ""  # Add newline for clean output
