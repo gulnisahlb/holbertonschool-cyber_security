@@ -1,0 +1,17 @@
+www
+dev
+test
+admin
+dns
+ns
+ns1
+ns2
+flag
+hidden
+internal
+stage
+staging
+beta
+api
+portal
+mail
