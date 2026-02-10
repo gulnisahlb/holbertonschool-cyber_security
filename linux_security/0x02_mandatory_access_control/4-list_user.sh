@@ -1,2 +1,2 @@
 #!/bin/bash
-semanage login -l
+echo "SELinux users:"; semanage login -l
