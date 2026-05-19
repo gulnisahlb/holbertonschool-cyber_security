@@ -1,14 +1,16 @@
 require 'json'
- 
+
 def count_user_ids(path)
-  data = JSON.parse(File.read(path))
- 
+  file = File.read(path)
+  data = JSON.parse(file)
+
   counts = Hash.new(0)
-  data.each do |entry|
-    counts[entry["userId"]] += 1
+
+  data.each do |item|
+    counts[item["userId"]] += 1
   end
- 
-  counts.sort.each do |user_id, count|
+
+  counts.each do |user_id, count|
     puts "#{user_id}: #{count}"
   end
 end
